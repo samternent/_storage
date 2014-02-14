@@ -1,15 +1,25 @@
+/*jslint browser: true*/
+
 var storageHelper = storageHelper || (function (window) {
     'use strict';
 
     /* private methods */
     var settings = {
-            storage: true
+            storage: true,
+            storageTested: false
         },
         
         library = {
             
             /* check local storage is available */
             checkStorage: function () {
+                if (!settings.storageTested) {
+                    library.testStorage();
+                }
+            },
+            
+            testStorage: function () {
+                settings.storageTested = true;
                 if (typeof (window.Storage) !== 'undefined') {
                     try {
                         // test for safari private browsing exception
