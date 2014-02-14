@@ -1,25 +1,22 @@
-storageHelper
-=========
+local storage helper library
+============================
 
-Local storage library
+usage
+-----
 
-- created to solve issue with safari private browsing... window.Storage exists but throws exception if you try to use it :s
-- handles parse and stringify objects to store in local or session storage so full object can be passed an retrieved
+storageHelper.set.local('key',{ name: 'value', content: 'store a json Object in local storage' });
+storageHelper.get.local('key');
+storageHelper.remove.local('key');
 
-storageHelper.setLocal('localVar', 'this is a session storage var');
+storageHelper.set.session('key',{ name: 'value', content: 'store a json Object in session storage' });
+storageHelper.get.session('key');
+storageHelper.remove.session('key');
 
-var obj = {
-  id: 1,
-  name: 'objName',
-  details: {
-    one: 'you can pass complex objects',
-    two: 'or just single string/int',
-    three: 'to be stored in local or session storage'
-  }
-};
 
-storageHelper.setSession('sessionObj', obj);  // return true or false if set
 
-storageHelper.getSession('sessionObj');       // return true or false if retrieved
+// store / retrieve JSON object direct to storage
+// checks storage exists
+// handle wierd exception thrown in safari provate browsing
 
-storageHelper.removeSession('sessionObj');    // return true or false is deleted
+
+TODO:: handle cookie fallback
