@@ -1,12 +1,20 @@
-storageHelper = (function () {
-    var settings = { storage: true },
-        lib = {
+var storageHelper = storageHelper || (function (window) {
+    'use strict';
+
+    /* private methods */
+    var settings = {
+            storage: true
+        },
+        
+        library = {
+            
+            /* check local storage is available */
             checkStorage: function () {
                 if (typeof (window.Storage) !== 'undefined') {
                     try {
                         // test for safari private browsing exception
-                        window.localStorage.setItem('test', 1);
-                        window.localStorage.removeItem('test');
+                        window.localStorage.setItem('teststorage', 1);
+                        window.localStorage.removeItem('teststorage');
                         settings.storage = true;
                     } catch (e) {
                         settings.storage = false;
@@ -14,65 +22,96 @@ storageHelper = (function () {
                 } else {
                     settings.storage = false;
                 }
-            },
-            // set to local storage
-            setLocal: function (name, value) {
-                lib.checkStorage();
+            }
+        },
+    
+        set = {
+            /* set to local storage */
+            local: function (name, value, options) {
+                library.checkStorage();
                 if (settings.storage) {
                     window.localStorage.setItem(name, JSON.stringify(value));
-                    return true;
                 } else {
-                    return false;
+                    set.cookie(name, value);
                 }
             },
-            // set to session storage
-            setSession: function (name, value) {
-                lib.checkStorage();
+            /* set to session storage */
+            session: function (name, value, options) {
+                library.checkStorage();
                 if (settings.storage) {
                     window.sessionStorage.setItem(name, JSON.stringify(value));
-                    return true;
                 } else {
-                    return false;
+                    set.cookie(name, value, options);
                 }
             },
-            // get from local storage
-            getLocal: function (name) {
-                lib.checkStorage();
-                return (settings.storage) ? JSON.parse(window.localStorage.getItem(name)) : false;
+            cookie: function (name, value, options) {
+                options = options !== null ? options : {};
+                // TODO: write some cookie logic
+            }
+        },
+        
+        get = {
+            /* get from local storage */
+            local: function (name) {
+                library.checkStorage();
+                return (settings.storage) ? JSON.parse(window.localStorage.getItem(name)) : get.cookie(name);
             },
-            // get from session storage
-            getSession: function (name) {
-                lib.checkStorage();
-                return (settings.storage) ? JSON.parse(window.sessionStorage.getItem(name)) : false;
+            /* get from session storage */
+            session: function (name) {
+                library.checkStorage();
+                return (settings.storage) ? JSON.parse(window.sessionStorage.getItem(name)) : get.cookie(name);
             },
-            // remove from local storage
-            removeLocal: function (name) {
-                lib.checkStorage();
+            cookie: function (name) {
+                //TODO: write some cookie logic
+            }
+        },
+        
+        remove = {
+            /* remove from local storage */
+            local: function (name) {
+                library.checkStorage();
                 if (settings.storage) {
-                    window.localStorage.removeItem(name)
-                    return true;
+                    window.localStorage.removeItem(name);
                 } else {
-                    return false;
+                    remove.cookie(name);
                 }
             },
-            // remove from session storage
-            removeSession: function (name) {
-                lib.checkStorage();
+            /* remove from session storage */
+            session: function (name) {
+                library.checkStorage();
                 if (settings.storage) {
-                    window.sessionStorage.removeItem(name)
-                    return true;
+                    window.sessionStorage.removeItem(name);
                 } else {
-                    return false;
+                    remove.cookie(name);
                 }
+            },
+            /* remove cookie */
+            cookie: function (name) {
+                // TODO: write some cookie logic
+            }
+        },
+
+        /* public methods */
+        publicParts = {
+            set: {
+                local: set.local,
+                session: set.session,
+                cookie: set.cookie
+            },
+            get: {
+                local: get.local,
+                session: get.session,
+                cookie: get.cookie
+            },
+            remove: {
+                local: remove.local,
+                session: remove.session,
+                cookie: remove.cookie
             }
         };
 
-    return {
-        setLocal: lib.setLocal,
-        setSession: lib.setSession,
-        getLocal: lib.getLocal,
-        getSession: lib.getSession,
-        removeLocal: lib.removeLocal,
-        removeSession: lib.removeSession
-    };
-}());
+
+    /* return */
+    return publicParts;
+
+}(window));
