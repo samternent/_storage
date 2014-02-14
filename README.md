@@ -1,22 +1,20 @@
-local storage helper library
-============================
+###Local storage helper library
 
-usage
------
+####Usage
 
-storageHelper.set.local('key',{ name: 'value', content: 'store a json Object in local storage' });
-storageHelper.get.local('key');
-storageHelper.remove.local('key');
+#####Local Storage
+`storageHelper.set.local('key',{ name: 'value', content: 'store a json Object in local storage' });`
 
-storageHelper.set.session('key',{ name: 'value', content: 'store a json Object in session storage' });
-storageHelper.get.session('key');
-storageHelper.remove.session('key');
+`storageHelper.get.local('key');`
 
+`storageHelper.remove.local('key');`
 
+#####Session Storage
+`storageHelper.set.session('key',{ name: 'value', content: 'store a json Object in session storage' });`
 
-// store / retrieve JSON object direct to storage
-// checks storage exists
-// handle wierd exception thrown in safari provate browsing
+`storageHelper.get.session('key');`
+
+`storageHelper.remove.session('key');`
 
 
-TODO:: handle cookie fallback
+######TODO:: handle cookie fallback
