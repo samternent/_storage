@@ -1,23 +1,34 @@
-/*jslint browser: true*/
+;
 
-var storageHelper = storageHelper || (function (window) {
+(function () {
     'use strict';
 
-    /* private methods */
     var settings = {
             storage: true,
             storageTested: false
         },
-        
+
+        storageSample = {
+            value: {},
+            expires: {
+                milliseconds: 0,
+                seconds: 0,
+                minutes: 0,
+                hours: 0,
+                days: 0,
+                months: 0,
+                years: 0
+            }
+        },
+
         library = {
-            
             /* check local storage is available */
             checkStorage: function () {
                 if (!settings.storageTested) {
                     library.testStorage();
                 }
             },
-            
+
             testStorage: function () {
                 settings.storageTested = true;
                 if (typeof (window.Storage) !== 'undefined') {
@@ -32,58 +43,101 @@ var storageHelper = storageHelper || (function (window) {
                 } else {
                     settings.storage = false;
                 }
+            },
+
+            extend: function () {
+                for (var i = 1; i < arguments.length; i++)
+                    for (var key in arguments[i])
+                        if (arguments[i].hasOwnProperty(key))
+                            arguments[0][key] = arguments[i][key];
+                return arguments[0];
+            },
+            calculateDate: function (times) {
+                var now = new Date();
+
+                return new Date(
+                    now.getFullYear() + times.years,
+                    now.getMonth() + times.months,
+                    now.getDate() + times.days,
+                    now.getHours() + times.hours,
+                    now.getMinutes() + times.minutes,
+                    now.getSeconds() + times.seconds,
+                    now.getMilliseconds() + times.milliseconds
+                );
             }
         },
-    
+
         set = {
             /* set to local storage */
             local: function (name, value, options) {
                 library.checkStorage();
                 if (settings.storage) {
-                    window.localStorage.setItem(name, JSON.stringify(value));
-                } else {
-                    set.cookie(name, value);
+                    window.localStorage.setItem(name, JSON.stringify(set.dataObj(value, options)));
                 }
             },
             /* set to session storage */
             session: function (name, value, options) {
                 library.checkStorage();
                 if (settings.storage) {
-                    window.sessionStorage.setItem(name, JSON.stringify(value));
-                } else {
-                    set.cookie(name, value, options);
+                    window.sessionStorage.setItem(name, JSON.stringify(set.dataObj(value, options)));
                 }
             },
-            cookie: function (name, value, options) {
-                options = options !== null ? options : {};
-                // TODO: write some cookie logic
+            dataObj: function (value, options) {
+                var storage = Object.create(storageSample);
+
+                storage.expires = library.calculateDate(
+                    library.extend(storageSample.expires, options)
+                );
+
+                if (storage.expires - new Date() === 0) {
+                    delete storage['expires']
+                }
+                storage.value = value;
+
+                return storage;
             }
         },
-        
+
         get = {
             /* get from local storage */
             local: function (name) {
                 library.checkStorage();
-                return (settings.storage) ? JSON.parse(window.localStorage.getItem(name)) : get.cookie(name);
+                if (settings.storage) {
+                    var store = JSON.parse(window.localStorage.getItem(name));
+                    return get.dataObj(store, name, 'local');
+                }
             },
             /* get from session storage */
             session: function (name) {
-                library.checkStorage();
-                return (settings.storage) ? JSON.parse(window.sessionStorage.getItem(name)) : get.cookie(name);
+                ibrary.checkStorage();
+                if (settings.storage) {
+                    var store = JSON.parse(window.sessionStorage.getItem(name));
+                    return get.dataObj(store, name, 'session');
+                }
             },
-            cookie: function (name) {
-                //TODO: write some cookie logic
+            dataObj: function (store, name, type) {
+                if (!store) {
+                    return false;
+                }
+
+                if (store.hasOwnProperty('expires')) {
+                    if (new Date(store.expires) - new Date() > 0) {
+                        return store.value;
+                    } else {
+                        remove[type](name);
+                    }
+                } else {
+                    return store.value;
+                }
             }
         },
-        
+
         remove = {
             /* remove from local storage */
             local: function (name) {
                 library.checkStorage();
                 if (settings.storage) {
                     window.localStorage.removeItem(name);
-                } else {
-                    remove.cookie(name);
                 }
             },
             /* remove from session storage */
@@ -91,37 +145,25 @@ var storageHelper = storageHelper || (function (window) {
                 library.checkStorage();
                 if (settings.storage) {
                     window.sessionStorage.removeItem(name);
-                } else {
-                    remove.cookie(name);
                 }
-            },
-            /* remove cookie */
-            cookie: function (name) {
-                // TODO: write some cookie logic
             }
         },
 
-        /* public methods */
-        publicParts = {
+        expose = {
             set: {
                 local: set.local,
-                session: set.session,
-                cookie: set.cookie
+                session: set.session
             },
             get: {
                 local: get.local,
-                session: get.session,
-                cookie: get.cookie
+                session: get.session
             },
             remove: {
                 local: remove.local,
-                session: remove.session,
-                cookie: remove.cookie
+                session: remove.session
             }
         };
 
 
-    /* return */
-    return publicParts;
-
-}(window));
+    window._storage = expose;
+}());
