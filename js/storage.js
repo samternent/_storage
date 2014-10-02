@@ -1,6 +1,6 @@
 ;
 
-(function () {
+(function (window) {
     'use strict';
 
     var settings = {
@@ -49,10 +49,11 @@
                 for (var i = 1; i < arguments.length; i++)
                     for (var key in arguments[i])
                         if (arguments[i].hasOwnProperty(key))
-                            arguments[0][key] = arguments[i][key];
+                            arguments[0][key] = parseInt(arguments[i][key]);
                 return arguments[0];
             },
             calculateDate: function (times) {
+
                 var now = new Date();
 
                 return new Date(
@@ -64,6 +65,7 @@
                     now.getSeconds() + times.seconds,
                     now.getMilliseconds() + times.milliseconds
                 );
+
             }
         },
 
@@ -85,13 +87,16 @@
             dataObj: function (value, options) {
                 var storage = Object.create(storageSample);
 
-                storage.expires = library.calculateDate(
-                    library.extend(storageSample.expires, options)
-                );
+                if (options !== undefined) {
+                    storage.expires = library.calculateDate(
+                        library.extend(storageSample.expires, options)
+                    );
 
-                if (storage.expires - new Date() === 0) {
-                    delete storage['expires']
+                    if (storage.expires - new Date() === 0) {
+                        delete storage.expires;
+                    }
                 }
+
                 storage.value = value;
 
                 return storage;
@@ -124,7 +129,9 @@
                     if (new Date(store.expires) - new Date() > 0) {
                         return store.value;
                     } else {
+                        // Object has expired remove previously set object
                         remove[type](name);
+                        return false;
                     }
                 } else {
                     return store.value;
@@ -164,6 +171,6 @@
             }
         };
 
-
     window._storage = expose;
-}());
+
+}(window));
