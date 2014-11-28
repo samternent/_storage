@@ -114,7 +114,7 @@
             },
             /* get from session storage */
             session: function (name) {
-                ibrary.checkStorage();
+                library.checkStorage();
                 if (settings.storage) {
                     var store = JSON.parse(window.sessionStorage.getItem(name));
                     return get.dataObj(store, name, 'session');
