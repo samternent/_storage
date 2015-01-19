@@ -70,14 +70,24 @@
         },
 
         set = {
-            /* set to local storage */
+            /**
+            Set local storage object
+            @param {string} - key
+            @param {object} - value object
+            @param {object} (optional) - expiry object
+            */
             local: function (name, value, options) {
                 library.checkStorage();
                 if (settings.storage) {
                     window.localStorage.setItem(name, JSON.stringify(set.dataObj(value, options)));
                 }
             },
-            /* set to session storage */
+            /**
+            Set session storage object
+            @param {string} - key
+            @param {object} - value object
+            @param {object} (optional) - expiry object
+            */
             session: function (name, value, options) {
                 library.checkStorage();
                 if (settings.storage) {
@@ -104,7 +114,11 @@
         },
 
         get = {
-            /* get from local storage */
+            /**
+            Get local storage object
+            @param {string} - key
+            @returns {object} - JSON value object
+            */
             local: function (name) {
                 library.checkStorage();
                 if (settings.storage) {
@@ -112,7 +126,11 @@
                     return get.dataObj(store, name, 'local');
                 }
             },
-            /* get from session storage */
+            /**
+            Get session storage object
+            @param {string} - key
+            @returns {object} - JSON value object
+            */
             session: function (name) {
                 library.checkStorage();
                 if (settings.storage) {
@@ -140,14 +158,20 @@
         },
 
         remove = {
-            /* remove from local storage */
+            /**
+            Remove local storage object
+            @param {string} - key
+            */
             local: function (name) {
                 library.checkStorage();
                 if (settings.storage) {
                     window.localStorage.removeItem(name);
                 }
             },
-            /* remove from session storage */
+            /**
+            Remove session storage object
+            @param {string} - key
+            */
             session: function (name) {
                 library.checkStorage();
                 if (settings.storage) {
