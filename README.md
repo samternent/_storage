@@ -1,20 +1,28 @@
 ###Local storage helper library
 
+A simple library to iron out browser quirks and support for browser storage
+
 ####Usage
 
-#####Local Storage
-`storageHelper.set.local('key',{ name: 'value', content: 'store a json Object in local storage' });`
+`var key = 'key-name';`
+`var value = {
+    title: 'about',
+    description: 'store any valid JSON object in local storage'
+};`
+`var expiryOptions = {
+    days: 14,
+    months: 1,
+    years: 1
+};`
 
-`storageHelper.get.local('key');`
+Sets storage object
+`_storage.set.local(key, value, expiryOptions);`
+`_storage.set.session(key, value, expiryOptions);`
 
-`storageHelper.remove.local('key');`
+Returns storage object by key name
+`_storage.get.local(key);`
+`_storage.get.session(key);`
 
-#####Session Storage
-`storageHelper.set.session('key',{ name: 'value', content: 'store a json Object in session storage' });`
-
-`storageHelper.get.session('key');`
-
-`storageHelper.remove.session('key');`
-
-
-######TODO:: handle cookie fallback
+Removes storage object by key name
+`_storage.remove.local(key);`
+`_storage.remove.session(key);`

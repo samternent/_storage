@@ -70,7 +70,7 @@
         },
 
         set = {
-            /* set to local storage */
+            //  set to local storage
             local: function (name, value, options) {
                 library.checkStorage();
                 if (settings.storage) {
