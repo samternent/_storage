@@ -22,7 +22,8 @@
         },
 
         library = {
-            /* check local storage is available */
+
+            // check local storage is available */
             checkStorage: function () {
                 if (!settings.storageTested) {
                     library.testStorage();
@@ -33,6 +34,7 @@
                 settings.storageTested = true;
                 if (typeof (window.Storage) !== 'undefined') {
                     try {
+
                         // test for safari private browsing exception
                         window.localStorage.setItem('teststorage', 1);
                         window.localStorage.removeItem('teststorage');
@@ -49,7 +51,7 @@
                 for (var i = 1; i < arguments.length; i++)
                     for (var key in arguments[i])
                         if (arguments[i].hasOwnProperty(key))
-                            arguments[0][key] = parseInt(arguments[i][key]);
+                            arguments[0][key] = parseInt(arguments[i][key], 10);
                 return arguments[0];
             },
             calculateDate: function (times) {
@@ -70,11 +72,12 @@
         },
 
         set = {
+
             /**
-            Set local storage object
-            @param {string} - key
-            @param {object} - value object
-            @param {object} (optional) - expiry object
+            * Set local storage object
+            * @param {string} - key
+            * @param {object} - value object
+            * @param {object} (optional) - expiry object
             */
             local: function (name, value, options) {
                 library.checkStorage();
@@ -82,11 +85,12 @@
                     window.localStorage.setItem(name, JSON.stringify(set.dataObj(value, options)));
                 }
             },
+
             /**
-            Set session storage object
-            @param {string} - key
-            @param {object} - value object
-            @param {object} (optional) - expiry object
+            * Set session storage object
+            * @param {string} - key
+            * @param {object} - value object
+            * @param {object} (optional) - expiry object
             */
             session: function (name, value, options) {
                 library.checkStorage();
@@ -94,6 +98,7 @@
                     window.sessionStorage.setItem(name, JSON.stringify(set.dataObj(value, options)));
                 }
             },
+
             dataObj: function (value, options) {
                 var storage = Object.create(storageSample);
 
@@ -111,13 +116,15 @@
 
                 return storage;
             }
+
         },
 
         get = {
+
             /**
-            Get local storage object
-            @param {string} - key
-            @returns {object} - JSON value object
+            * Get local storage object
+            * @param {string} - key
+            * @returns {object} - JSON value object
             */
             local: function (name) {
                 library.checkStorage();
@@ -126,10 +133,11 @@
                     return get.dataObj(store, name, 'local');
                 }
             },
+
             /**
-            Get session storage object
-            @param {string} - key
-            @returns {object} - JSON value object
+            * Get session storage object
+            * @param {string} - key
+            * @returns {object} - JSON value object
             */
             session: function (name) {
                 library.checkStorage();
@@ -138,6 +146,7 @@
                     return get.dataObj(store, name, 'session');
                 }
             },
+
             dataObj: function (store, name, type) {
                 if (!store) {
                     return false;
@@ -155,12 +164,14 @@
                     return store.value;
                 }
             }
+
         },
 
         remove = {
+
             /**
-            Remove local storage object
-            @param {string} - key
+            * Remove local storage object
+            * @param {string} - key
             */
             local: function (name) {
                 library.checkStorage();
@@ -168,9 +179,10 @@
                     window.localStorage.removeItem(name);
                 }
             },
+            
             /**
-            Remove session storage object
-            @param {string} - key
+            * Remove session storage object
+            * @param {string} - key
             */
             session: function (name) {
                 library.checkStorage();
